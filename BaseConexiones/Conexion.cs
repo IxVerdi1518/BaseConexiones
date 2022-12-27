@@ -19,7 +19,8 @@ namespace BaseConexiones
         {
             try
             {
-                cn = new SqlConnection("Data Source=PC_INGLSAC23\\SQLEXPRESS;Initial Catalog=Cliente;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
+                cn = new SqlConnection("Data Source=DESKTOP-KBQIMBE;Initial Catalog=Clientes;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
+                //                      Data Source=DESKTOP-KBQIMBE;Initial Catalog=Clientes;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False
                 cn.Open();
                 Console.WriteLine("Conectado");
             }
@@ -31,18 +32,16 @@ namespace BaseConexiones
 
 
 
-        public string insertar(int IdCliente, string nombre, string apellido, string cedula)
+        public string insertar(int idCliente, string nombres, string apellidos, string cedula)
         {
             string salida = "Se inserto";
             try
             {
-                Cmd = new SqlCommand(" Insert into Cliente " +
-                //"(IdCliente,nombre,apellido,cedula) values ('" + IdCliente + "','"+nombre+"','"+apellido+"','"+cedula+"')", cn);
-                "(IdCliente,nombre,apellido,cedula) values (@IdCliente,@nombre,@apellido,@cedula)", cn);
-                cmd.Parameters.Add("@IdCliente", SqlDbType.Int);
-                cmd.Parameters["@IdCliente"].Value = IdCliente;
-                cmd.Parameters.AddWithValue("@nombre", nombre);
-                cmd.Parameters.AddWithValue("@apellido", apellido);
+                Cmd = new SqlCommand(" Insert into Clientes " +"(idCliente,nombres,apellidos,cedula) values (@idCliente,@nombres,@apellidos,@cedula)", cn);
+                cmd.Parameters.Add("@idCliente", SqlDbType.Int);
+                cmd.Parameters["@idCliente"].Value = idCliente;
+                cmd.Parameters.AddWithValue("@nombres", nombres);
+                cmd.Parameters.AddWithValue("@apellidos", apellidos);
                 cmd.Parameters.AddWithValue("@cedula", cedula);
                 cmd.ExecuteNonQuery();
 
