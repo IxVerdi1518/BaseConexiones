@@ -60,7 +60,7 @@ namespace BaseConexiones
             try
             {
                 
-                cmd = new SqlCommand("select * from Cliente", cn);
+                cmd = new SqlCommand("select * from Clientes", cn);
                 cmd.ExecuteNonQuery();
                 using (SqlDataReader reader = cmd.ExecuteReader())
                 {
@@ -88,9 +88,9 @@ namespace BaseConexiones
             try
             {
 
-                cmd = new SqlCommand("select * from Cliente where IdCliente =  @IdCliente", cn);
-                cmd.Parameters.Add("@IdCliente", SqlDbType.Int);
-                cmd.Parameters["@IdCliente"].Value = id;
+                cmd = new SqlCommand("select * from Clientes where idCliente =  @idCliente", cn);
+                cmd.Parameters.Add("@idCliente", SqlDbType.Int);
+                cmd.Parameters["@idCliente"].Value = id;
                 cmd.ExecuteNonQuery();
                 using (SqlDataReader reader = cmd.ExecuteReader())
                 {
@@ -118,9 +118,9 @@ namespace BaseConexiones
             try
             {
 
-                cmd = new SqlCommand("Delete Cliente where IdCliente =  @IdCliente", cn);
-                cmd.Parameters.Add("@IdCliente", SqlDbType.Int);
-                cmd.Parameters["@IdCliente"].Value = id;
+                cmd = new SqlCommand("Delete Clientes where idCliente =  @idCliente", cn);
+                cmd.Parameters.Add("@idCliente", SqlDbType.Int);
+                cmd.Parameters["@idCliente"].Value = id;
                 cmd.ExecuteNonQuery();
                 
 
@@ -153,10 +153,10 @@ namespace BaseConexiones
             string actualizarSql = "Se Actualizo";
             try
             {
-                cmd = new SqlCommand("UPDATE Cliente SET nombre = @nombre Where IdCliente = IdCliente", cn);
-                cmd.Parameters.Add("@IdCliente", SqlDbType.Int);
-                cmd.Parameters["@IdCliente"].Value = id;
-                cmd.Parameters.AddWithValue("@nombre", nombre);
+                cmd = new SqlCommand("UPDATE Clientes SET nombre = @nombres Where idCliente = idCliente", cn);
+                cmd.Parameters.Add("@idCliente", SqlDbType.Int);
+                cmd.Parameters["@idCliente"].Value = id;
+                cmd.Parameters.AddWithValue("@nombres", nombre);
                 cmd.ExecuteNonQuery();
             }
             catch (Exception ex) 
