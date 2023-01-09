@@ -6,12 +6,15 @@ using System.Threading.Tasks;
 using System.Data.SqlClient;
 using System.Data;
 
+
 namespace BaseConexiones
 {
     public class Conexion
     {
+
         SqlConnection cn;
         SqlCommand cmd;
+        
         public SqlConnection Cn { get => cn; set => cn = value; }
         public SqlCommand Cmd { get => cmd; set => cmd = value; }
 
@@ -25,7 +28,7 @@ namespace BaseConexiones
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.ToString());
+                Console.WriteLine("No se conectó: "+ex.ToString());
             }
         }
 
@@ -36,22 +39,48 @@ namespace BaseConexiones
             string salida = "Se inserto";
             try
             {
-                Cmd = new SqlCommand(" Insert into Clientes " +"(idCliente,nombres,apellidos,cedula) values (@idCliente,@nombres,@apellidos,@cedula)", cn);
-                cmd.Parameters.Add("@idCliente", SqlDbType.Int);
-                cmd.Parameters["@idCliente"].Value = idCliente;
-                cmd.Parameters.AddWithValue("@nombres", nombres);
-                cmd.Parameters.AddWithValue("@apellidos", apellidos);
-                cmd.Parameters.AddWithValue("@cedula", cedula);
-                cmd.ExecuteNonQuery();
-
+                try
+                {
+                    Cmd = new SqlCommand(" Insert into Clientes " + "(idCliente,nombres,apellidos,cedula) values (@idCliente,@nombres,@apellidos,@cedula)", cn);
+                }
+                catch (FormatException ex)
+                {
+                    Console.WriteLine("Formato no valido: " + ex.ToString);
+                }
+                catch (SqlException ex)
+                {
+                    Console.WriteLine("Comando Insertar Incorrecto: "+ ex.ToString());
+                }
+                try
+                {
+                    cmd.Parameters.Add("@idCliente", SqlDbType.Int);
+                    cmd.Parameters["@idCliente"].Value = idCliente;
+                    cmd.Parameters.AddWithValue("@nombres", nombres);
+                    cmd.Parameters.AddWithValue("@apellidos", apellidos);
+                    cmd.Parameters.AddWithValue("@cedula", cedula);
+                    cmd.ExecuteNonQuery();
+                }catch(Exception ex)
+                {
+                    Console.WriteLine("Intercambio incorrecto en el Insert " + ex.ToString());
+                }
+            }
+            catch (DBConcurrencyException ex)
+            {
+                Console.WriteLine("Error de concurrencia: " + ex.ToString());
+            }
+            catch (InvalidCastException ex)
+            {
+                Console.WriteLine("No puede generar: " + ex.ToString);
+            }
+            catch (FormatException ex)
+            {
+                Console.WriteLine("Formato no valido: " + ex.ToString);
             }
             catch (Exception ex)
             {
-                salida = "No se conecto: " + ex.ToString();
-                Console.WriteLine(salida);
+                Console.WriteLine("Algo fallo: " + ex.ToString());
             }
-            
-            return salida;
+                return salida;
         }
         public string consultar() 
         {
@@ -73,9 +102,21 @@ namespace BaseConexiones
                     }
                 }
             }
-            catch (Exception ex) 
+            catch (DBConcurrencyException ex)
             {
-                consulta = "No se conecto: " + ex.ToString();
+                Console.WriteLine("Error de concurrencia: " + ex.ToString());
+            }
+            catch (InvalidCastException ex)
+            {
+                Console.WriteLine("No puede generar: " + ex.ToString);
+            }
+            catch (FormatException ex)
+            {
+                Console.WriteLine("Formato no valido: " + ex.ToString);
+            }
+            catch (Exception ex)
+            {
+                consulta = "No se inserto: " + ex.ToString();
                 Console.WriteLine(consulta);
             }
             return consulta;
@@ -103,9 +144,21 @@ namespace BaseConexiones
                     }
                 }
             }
+            catch (DBConcurrencyException ex)
+            {
+                Console.WriteLine("Error de concurrencia: " + ex.ToString());
+            }
+            catch (InvalidCastException ex)
+            {
+                Console.WriteLine("No puede generar: " + ex.ToString);
+            }
+            catch (FormatException ex)
+            {
+                Console.WriteLine("Formato no valido: " + ex.ToString);
+            }
             catch (Exception ex)
             {
-                consulta = "No se conecto: " + ex.ToString();
+                consulta = "No se inserto: " + ex.ToString();
                 Console.WriteLine(consulta);
             }
             return consulta;
@@ -117,17 +170,34 @@ namespace BaseConexiones
             try
             {
 
-                cmd = new SqlCommand("Delete Clientes where idCliente =  @idCliente", cn);
-                cmd.Parameters.Add("@idCliente", SqlDbType.Int);
-                cmd.Parameters["@idCliente"].Value = id;
+                try
+                {
+                    cmd = new SqlCommand("Delete Clientes where idCliente =  @idCliente", cn);
+                }
+                catch (FormatException ex)
+                {
+                    Console.WriteLine("Formato no valido: " + ex.ToString);
+                }
+                catch (SqlException ex)
+                {
+                    Console.WriteLine("Linea de comando incorrecto" + ex.ToString);
+                }
+                try
+                {
+                    cmd.Parameters.Add("@idCliente", SqlDbType.Int);
+                    cmd.Parameters["@idCliente"].Value = id;
+                }
+                catch(Exception ex)
+                {
+                    Console.WriteLine("Mal asignación de variables" + ex.ToString);
+                }
                 cmd.ExecuteNonQuery();
                 
 
             }
             catch (Exception ex)
             {
-                eliminar = "No se conecto: " + ex.ToString();
-                Console.WriteLine(eliminar);
+                Console.WriteLine("Algo fallo: " + ex.ToString);
             }
             return eliminar;
         }
@@ -152,16 +222,30 @@ namespace BaseConexiones
             string actualizarSql = "Se Actualizo";
             try
             {
-                cmd = new SqlCommand("UPDATE Clientes SET nombre = @nombres Where idCliente = idCliente", cn);
-                cmd.Parameters.Add("@idCliente", SqlDbType.Int);
-                cmd.Parameters["@idCliente"].Value = id;
-                cmd.Parameters.AddWithValue("@nombres", nombre);
-                cmd.ExecuteNonQuery();
+                try
+                {
+                    cmd = new SqlCommand("UPDATE Clientes SET nombre = @nombres Where idCliente = idCliente", cn);
+                }
+                catch (SqlException ex)
+                {
+                    Console.WriteLine("Linea de sentencia incorrecto: "+ex.ToString);
+                }
+                try
+                {
+                    cmd.Parameters.Add("@idCliente", SqlDbType.Int);
+                    cmd.Parameters["@idCliente"].Value = id;
+                    cmd.Parameters.AddWithValue("@nombres", nombre);
+                    cmd.ExecuteNonQuery();
+                }
+                catch(Exception ex)
+                {
+                    Console.WriteLine("Fallo en la asignación de las variables: " + ex.ToString);
+                }
+                
             }
             catch (Exception ex) 
             {
-                actualizarSql = "No se actualizo: " + ex.ToString();
-                Console.WriteLine(actualizarSql);
+                Console.WriteLine("Algo fallo: " + ex.ToString);
             }
             return actualizarSql;
         }
